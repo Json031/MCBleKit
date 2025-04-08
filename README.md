@@ -22,17 +22,50 @@ const MCBleKit = require('mcblekit')
    ```
 ### 示例代码Example code:：
  ```bash
+    var writeServiceId = '108A'//write property service identifier
+    var writeCharacteristicsId = '909C'//write property Characteristic identifier
+    var serviceId = null
+    var characteristicsId = null
+
     var mcblekit = MCBleKit.getSampleInstance("YOUR_BLUETOOTH_NAME")
     mcblekit.onCharacteristicFound((serviceId, res) => {
+  
+        for (var i = 0; i < res.characteristics.length; i++) {
+            if (res.characteristics[i].uuid.toUpperCase().indexOf(writeCharacteristicsId.toUpperCase()) >= 0) {
+                 characteristicsId = res.characteristics[i].uuid
+
+                 //找到写入特征，开始写入数据 Find the write Characteristic and start writing data
+                 //判断是否已连接 Determine if it is connected
+                 if (mcblekit.connected) {
+                      //发送数据write data Value
+                      let buffer = new ArrayBuffer(2);
+                      let view = new DataView(buffer);
+                      view.setUint8(0, 0x0A);
+                      view.setUint8(1, 0x01);
+                      mcblekit.writeValue(buffer, 'writeNoResponse', serviceId, characteristicsId)
+                 }
+                 break
+            }
+        }
+
         console.log(`发现服务 ${serviceId} 的特征:`, res.characteristics);
     });
+
     mcblekit.onServicesFound((services) => {
+
         for (var i = 0; i < services.length; i++) {
+            if (services[i].uuid.toUpperCase().indexOf(writeServiceId.toUpperCase()) >= 0) {
+                 serviceId = services[i].uuid
+                 break
+            }
             console.log(`发现服务 ${services[i].uuid}`);
         }
     });
     mcblekit.bluetoothDeviceFound(() => {
         console.log('bluetoothDeviceFound:' + mcblekit.devices[mcblekit.devices.length - 1].name);
+    });
+    mcblekit.onConnectedStatusChange(() => {
+        console.log('onConnectedStatusChange:' + mcblekit.connected ? "connected" : "disconnected");
     });
    ```
 ![image](https://github.com/user-attachments/assets/a023a2c2-0708-4a42-a2b3-f013f8b53f5c)
