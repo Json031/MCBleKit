@@ -12,6 +12,7 @@
    ```
 ### 在小程序 package.json 所在的目录中执行命令安装 npm 包。 Execute the command to install the npm package in the directory where the mini program packagejson is located：
  ```bash
+cd /the/path/to/package.json file/
 npm install
    ```
 ### 在引用蓝牙管理类的js内引入 mcblekit 的模块，并将该模块的导出内容赋值给变量 MCBleKit. Introduce the mcblekit module into the JS that references the Bluetooth management class, and assign the exported content of this module to the variable MCBleKit.
