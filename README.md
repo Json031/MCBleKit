@@ -65,8 +65,8 @@ const MCBleKit = require('mcblekit')
     mcblekit.bluetoothDeviceFound(() => {
         console.log('bluetoothDeviceFound:' + mcblekit.devices[mcblekit.devices.length - 1].name);
     });
-    mcblekit.onConnectedStatusChange(() => {
-        console.log('onConnectedStatusChange:' + mcblekit.connected ? "connected" : "disconnected");
+    mcblekit.onConnectedStatusChange((connected) => {
+        console.log('onConnectedStatusChange:' + (connected ? "connected" : "disconnected"));
     });
    ```
 ![image](https://github.com/user-attachments/assets/a023a2c2-0708-4a42-a2b3-f013f8b53f5c)
