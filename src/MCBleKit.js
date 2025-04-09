@@ -102,7 +102,7 @@ Object.defineProperty(MCBleKit.prototype, 'connected', {
         if (this._connected!== value) {
             this._connected = value;
             if (typeof this.connectedStatusChangeListener === 'function') {
-                this.connectedStatusChangeListener();
+                this.connectedStatusChangeListener(value);
             }
         }
     }
@@ -113,7 +113,7 @@ Object.defineProperty(MCBleKit.prototype, 'connecting', {
         if (this._connecting!== value) {
             this._connecting = value;
             if (typeof this.connectingStatusChangeListener === 'function') {
-                this.connectingStatusChangeListener();
+                this.connectingStatusChangeListener(value);
             }
         }
     }
@@ -227,7 +227,7 @@ MCBleKit.prototype.onBluetoothDeviceFound = function () {
             }
         });
         that.devices = bluetoothDataList;
-        that.bluetoothDeviceFoundListener();
+        that.bluetoothDeviceFoundListener(that.devices);
     });
 };
 
