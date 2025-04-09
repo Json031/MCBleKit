@@ -69,8 +69,7 @@ const MCBleKit = require('mcblekit')
         console.log('onConnectedStatusChange:' + (connected ? "connected" : "disconnected"));
     });
    ```
-![image](https://github.com/user-attachments/assets/a023a2c2-0708-4a42-a2b3-f013f8b53f5c)
-
+![console log](https://github.com/user-attachments/assets/492cef49-f311-4a54-a2f0-7fbb5a4457de)
 
 # 许可证 License
 This library is licensed under the [MIT License](https://github.com/Json031/MCBleKit/blob/main/LICENSE).
