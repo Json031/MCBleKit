@@ -3,7 +3,7 @@
 
 # 安装Install
 * 最新版本 Latest Version: [![NPM version](https://img.shields.io/npm/v/mcblekit.svg)](https://www.npmjs.com/package/mcblekit)
-### 编辑package.json，添加mcblekit依赖。 Edit packagejson and add mcblekit dependency:：
+### 编辑package.json，添加mcblekit依赖。 Edit packagejson and add mcblekit dependency:
  ```bash
 {
   "dependencies": {
@@ -21,7 +21,7 @@ npm install
  ```bash
 const MCBleKit = require('mcblekit')
    ```
-### 示例代码Example code:：
+### 示例代码Example code:
  ```bash
     var writeServiceId = '108A'//write property service identifier
     var writeCharacteristicsId = '909C'//write property Characteristic identifier
