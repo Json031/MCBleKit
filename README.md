@@ -17,12 +17,14 @@
 cd /the/path/to/package.json file/
 npm install
    ```
-### 在引用蓝牙管理类的js内引入 mcblekit 的模块，并将该模块的导出内容赋值给变量 MCBleKit. <br>Introduce the mcblekit module into the JS that references the Bluetooth management class, and assign the exported content of this module to the variable MCBleKit.
+
+# 示例代码 <br>Example code:
+在引用蓝牙管理类的js内引入 mcblekit 的模块，并将该模块的导出内容赋值给变量 MCBleKit. <br>Introduce the mcblekit module into the JS that references the Bluetooth management class, and assign the exported content of this module to the variable MCBleKit.
 
  ```bash
 const MCBleKit = require('mcblekit')
    ```
-# 示例代码 <br>Example code:
+
  ```bash
     var writeServiceId = '108A'//write property service identifier
     var writeCharacteristicsId = '909C'//write property Characteristic identifier
