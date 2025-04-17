@@ -202,18 +202,10 @@ MCBleKit.prototype.startBluetoothDevicesDiscovery = function () {
     var that = this;
     wx.startBluetoothDevicesDiscovery({
         success: function (res) {
-            console.log('🔍 开始扫描设备', res)
             that.onBluetoothDeviceFound();
             that.startDiscoverListener();
         },
         fail: function (res) {
-            console.log('❌ 扫描设备失败', res)
-            if (res.errCode === 10004) {
-                wx.showToast({
-                  title: '当前设备不支持蓝牙',
-                  icon: 'none',
-                })
-              }
             console.log('startBluetoothDevicesDiscovery fail' + res.errMsg);
         }
     });
@@ -270,7 +262,7 @@ MCBleKit.prototype.connectToBluetoothDevice = function () {
     wx.createBLEConnection({
         deviceId: this.bleDevice.deviceId,
         success: function (res) {
-            console.log('连接设备成功', res);
+            console.log('连接成功', res);
             that.connected = true;
             wx.setBLEMTU({
                 deviceId: that.bleDevice.deviceId,
@@ -286,7 +278,6 @@ MCBleKit.prototype.connectToBluetoothDevice = function () {
             that.getBLEDeviceServices();
         },
         fail: function (res) {
-            console.log('❌ 连接设备失败', res)
             if (res.errno == 1509001 && res.errCode == 10003 && util.containsIgnoreCase(res.errMsg, 'status:133')) {
                 wx.openBluetoothAdapter({
                     success: function (res) {
