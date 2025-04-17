@@ -1,4 +1,6 @@
 var util = require('./MCUtil.js');
+var mcrssi = require('./MCrssi.js');
+
 var __instance = (function () {
     var instance;
     return function (newInstance) {
@@ -37,6 +39,8 @@ function MCBleKit() {
     this.startDiscoverListener = function () {};
     // 发现服务通知
     this.serviceListener = function () {};
+    // rssi通知
+    this.rssiListener = function () {};
     // 发现服务特征通知
     this.characteristicListener = function () {};
 }
@@ -88,6 +92,13 @@ MCBleKit.prototype.onServicesFound = function (serviceListener) {
         serviceListener = function () {};
     }
     this.serviceListener = serviceListener;
+};
+
+MCBleKit.prototype.onRssiChangesFound = function (rssiListener) {
+    if (typeof rssiListener!== 'function') {
+        rssiListener = function () {};
+    }
+    this.rssiListener = rssiListener;
 };
 
 MCBleKit.prototype.onCharacteristicFound = function (characteristicListener) {
@@ -284,6 +295,7 @@ MCBleKit.prototype.connectToBluetoothDevice = function () {
                 }
             });
             that.getBLEDeviceServices();
+            that.getRssi();
         },
         fail: function (res) {
             console.log('❌ 连接设备失败', res)
@@ -318,6 +330,20 @@ MCBleKit.prototype.connectToBluetoothDevice = function () {
         }
     });
 };
+
+/**
+ * 获取信号强度
+ */
+MCBleKit.prototype.getRssi = async function () {
+    var that = this;
+    try {
+        const rssi = await mcrssi.getDeviceRSSI(this.bleDevice.deviceId)
+        console.log('📶 设备信号强度:', rssi)
+        that.rssiListener(rssi);
+      } catch (err) {
+        console.error('读取 RSSI 出错', err)
+      }
+}
 
 /**
  * 获取Services
