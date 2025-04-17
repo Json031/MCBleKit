@@ -35,10 +35,42 @@ function isEqualIgnoreCase(str1, str2) {
     return str1.toUpperCase() === str2.toUpperCase();
 }
 
+function handleBluetoothError(err) {
+    const code = err.errCode
+    let message = '发生未知错误'
+  
+    const errorMap = {
+      10000: '未初始化蓝牙适配器',
+      10001: '当前蓝牙不可用',
+      10002: '没有找到指定设备',
+      10003: '连接失败',
+      10004: '没有找到指定服务',
+      10005: '没有找到指定特征值',
+      10006: '当前连接已断开',
+      10007: '当前特征值不支持此操作',
+      10008: '其余所有系统上报的异常',
+      10009: 'Android 系统特有，系统版本低于 4.3 不支持 BLE',
+      10012: '连接超时',
+      10013: '连接 deviceId 为空或者是格式不正确',
+    }
+  
+    if (errorMap[code]) {
+      message = errorMap[code]
+    }
+  
+    wx.showToast({
+      title: message,
+      icon: 'none',
+    })
+  
+    console.error('蓝牙错误:', code, message)
+  }
+  
 module.exports = {
     isEmptyStr: isEmptyStr,
     contains: contains,
     isEqualIgnoreCase: isEqualIgnoreCase,
     isNullObject: isNullObject,
-    containsIgnoreCase: containsIgnoreCase
+    containsIgnoreCase: containsIgnoreCase,
+    handleBluetoothError: handleBluetoothError
 };
