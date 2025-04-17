@@ -22,7 +22,7 @@ npm install
  ```bash
 const MCBleKit = require('mcblekit')
    ```
-### 示例代码 <br>Example code:
+# 示例代码 <br>Example code:
  ```bash
     var writeServiceId = '108A'//write property service identifier
     var writeCharacteristicsId = '909C'//write property Characteristic identifier
