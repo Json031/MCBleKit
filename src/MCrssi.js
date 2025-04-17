@@ -1,4 +1,18 @@
-// MCrssi.js
+/**
+ * MCrssi.js.
+ * MCBleKit
+ * 
+ * Created by Morgan Chen on 2025/4/17.
+ * https://github.com/Json031
+ */
+
+/**
+ * get Bluetooth Device RSSI
+ *
+ * @param {string} deviceId Bluetooth device id
+ *
+ * @return {number} RSSI value
+ */
 function getDeviceRSSI(deviceId) {
     return new Promise((resolve, reject) => {
       wx.getBLEDeviceRSSI({

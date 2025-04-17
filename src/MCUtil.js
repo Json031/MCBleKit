@@ -1,14 +1,44 @@
-// 空字符串
+/**
+ * MCUtil.js.
+ * MCBleKit
+ * 
+ * Created by Morgan Chen on 2025/4/8.
+ * https://github.com/Json031
+ */
+
+/**
+ * Determine if it is an empty string
+ *
+ * @param {string} str determine object
+ *
+ * @return {Boolean} true/false
+ *
+ */
 function isEmptyStr(str) {
     return str === null || str === undefined || str === "";
 }
 
-// 空对象
+/**
+ * Determine if it is an empty object
+ *
+ * @param {object} object determine object
+ *
+ * @return {Boolean} true/false
+ *
+ */
 function isNullObject(object) {
     return object === null || object === undefined;
 }
 
-// 含有子字符串
+/**
+ * Determine if there are substrings present
+ *
+ * @param {string} str determine object
+ * @param {string} subStr substrings
+ *
+ * @return {Boolean} true/false
+ *
+ */
 function contains(str, subStr) {
     if (isEmptyStr(str)) {
         return false;
@@ -19,12 +49,28 @@ function contains(str, subStr) {
     return str.indexOf(subStr) >= 0;
 }
 
-// 忽略大小写敏感判断是否含有子字符串
+/**
+ * Ignore case sensitivity to determine if there are substrings
+ *
+ * @param {string} str determine object
+ * @param {string} subStr substrings
+ *
+ * @return {Boolean} true/false
+ *
+ */
 function containsIgnoreCase(str, subStr) {
     return contains(str.toLowerCase(), subStr.toLowerCase());
 }
 
-// 忽略大小写敏感对比字符串
+/**
+ * Ignore case sensitive comparison strings
+ *
+ * @param {string} str1 determine object
+ * @param {string} sub2 determine object
+ *
+ * @return {Boolean} true/false
+ *
+ */
 function isEqualIgnoreCase(str1, str2) {
     if (isEmptyStr(str1)) {
         return false;
@@ -35,6 +81,12 @@ function isEqualIgnoreCase(str1, str2) {
     return str1.toUpperCase() === str2.toUpperCase();
 }
 
+/**
+ * handle Bluetooth Error
+ *
+ * @param {object} err Bluetooth Error
+ *
+ */
 function handleBluetoothError(err) {
     const code = err.errCode
     let message = '发生未知错误'

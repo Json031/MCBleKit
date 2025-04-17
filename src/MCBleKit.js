@@ -1,5 +1,17 @@
+/**
+ * MCBleKit.js.
+ * MCBleKit
+ * 
+ * Created by Morgan Chen on 2025/4/8.
+ * https://github.com/Json031
+ */
+
 var util = require('./MCUtil.js');
 var mcrssi = require('./MCrssi.js');
+var mcTimeout = require('./MCTimeout.js');
+
+let ScanDeviceTimeout = 35000;//扫描蓝牙超时时间，单位毫秒
+let ConnectDeviceTimeout = 60000;//连接蓝牙超时时间，单位毫秒
 
 var __instance = (function () {
     var instance;
@@ -207,17 +219,24 @@ MCBleKit.prototype.getBluetoothAdapterState = function () {
 
 // 开始扫描
 MCBleKit.prototype.startBluetoothDevicesDiscovery = function () {
+    mcTimeout.withTimeout(this.startScan(), ScanDeviceTimeout, '设备扫描超时')
+};
+MCBleKit.prototype.startScan = function () {
+    return new Promise((resolve, reject) => {
     if (util.isEmptyStr(this.blueName)) {
+        reject;
         return;
     }
     var that = this;
     wx.startBluetoothDevicesDiscovery({
         success: function (res) {
+            resolve;
             console.log('🔍 开始扫描设备', res)
             that.onBluetoothDeviceFound();
             that.startDiscoverListener();
         },
         fail: function (res) {
+            reject;
             console.log('❌ 扫描设备失败', res)
             if (res.errCode === 10004) {
                 wx.showToast({
@@ -228,8 +247,8 @@ MCBleKit.prototype.startBluetoothDevicesDiscovery = function () {
             console.log('startBluetoothDevicesDiscovery fail' + res.errMsg);
         }
     });
+      })
 };
-
 //连接设备
 // 获取所有已发现的设备
 MCBleKit.prototype.onBluetoothDeviceFound = function () {
@@ -266,71 +285,80 @@ MCBleKit.prototype.stopBluetoothDevicesDiscovery = function () {
 };
 
 MCBleKit.prototype.connectToBluetoothDevice = function () {
-    if (util.isNullObject(this.bleDevice)) {
-        return;
-    }
-    if (this.connected) {
-        return;
-    }
-    if (this.connecting) {
-        return;
-    }
-    this.connecting = true;
-    // 连接外设
-    var that = this;
-    wx.createBLEConnection({
-        deviceId: this.bleDevice.deviceId,
-        success: function (res) {
-            console.log('连接设备成功', res);
-            that.connected = true;
-            wx.setBLEMTU({
-                deviceId: that.bleDevice.deviceId,
-                mtu: that.bleMTU,
-                success: function (res) {
-                    console.log('setBLEMTU succ');
-                },
-                fail: function (err) {
-                    that.errorOccurListener(err);
-                    console.log('setBLEMTU fail' + JSON.stringify(err));
-                }
-            });
-            that.getBLEDeviceServices();
-            that.getRssi();
-        },
-        fail: function (res) {
-            console.log('❌ 连接设备失败', res)
-            if (res.errno == 1509001 && res.errCode == 10003 && util.containsIgnoreCase(res.errMsg, 'status:133')) {
-                wx.openBluetoothAdapter({
+    mcTimeout.withTimeout(this.connectDeviceWithTimeout(), ConnectDeviceTimeout, '连接设备超时')
+};
+MCBleKit.prototype.connectDeviceWithTimeout = function () {
+    return new Promise((resolve, reject) => {
+        if (util.isNullObject(this.bleDevice)) {
+            reject;
+            return;
+        }
+        if (this.connected) {
+            reject;
+            return;
+        }
+        if (this.connecting) {
+            reject;
+            return;
+        }
+        this.connecting = true;
+        // 连接外设
+        var that = this;
+        wx.createBLEConnection({
+            deviceId: this.bleDevice.deviceId,
+            success: function (res) {
+                resolve;
+                console.log('连接设备成功', res);
+                that.connected = true;
+                wx.setBLEMTU({
+                    deviceId: that.bleDevice.deviceId,
+                    mtu: that.bleMTU,
                     success: function (res) {
-                        console.log('初始化蓝牙成功', res);
-                        var coTimer = setInterval(function () {
-                            that.connectToBluetoothDevice();
-                            clearInterval(coTimer);
-                        }, 1000);
+                        console.log('setBLEMTU succ');
                     },
-                    fail: function (res) {
-                        that.errorOccurListener(res);
-                        console.log('初始化蓝牙失败', res);
+                    fail: function (err) {
+                        that.errorOccurListener(err);
+                        console.log('setBLEMTU fail' + JSON.stringify(err));
                     }
                 });
-                return;
-            }
-            if (res.errno == 1509007) {
                 that.getBLEDeviceServices();
+                that.getRssi();
+            },
+            fail: function (res) {
+                reject;
+                console.log('❌ 连接设备失败', res)
+                if (res.errno == 1509001 && res.errCode == 10003 && util.containsIgnoreCase(res.errMsg, 'status:133')) {
+                    wx.openBluetoothAdapter({
+                        success: function (res) {
+                            console.log('初始化蓝牙成功', res);
+                            var coTimer = setInterval(function () {
+                                that.connectToBluetoothDevice();
+                                clearInterval(coTimer);
+                            }, 1000);
+                        },
+                        fail: function (res) {
+                            that.errorOccurListener(res);
+                            console.log('初始化蓝牙失败', res);
+                        }
+                    });
+                    return;
+                }
+                if (res.errno == 1509007) {
+                    that.getBLEDeviceServices();
+                }
+                console.log('连接失败', res);
+                //超时情况不提示
+                if (!util.containsIgnoreCase(res.errMsg, 'connect time out')) {
+                    that.errorOccurListener(res);
+                    wx.showToast({
+                        title: '连接失败:' + res.errno,
+                        icon: 'none'
+                    });
+                }
             }
-            console.log('连接失败', res);
-            //超时情况不提示
-            if (!util.containsIgnoreCase(res.errMsg, 'connect time out')) {
-                that.errorOccurListener(res);
-                wx.showToast({
-                    title: '连接失败:' + res.errno,
-                    icon: 'none'
-                });
-            }
-        }
-    });
-};
-
+        });   
+    });   
+}
 /**
  * 获取信号强度
  */
