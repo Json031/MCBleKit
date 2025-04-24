@@ -1,9 +1,13 @@
 # MCBleKit
+[![NPM version](https://img.shields.io/npm/v/mcblekit.svg)](https://www.npmjs.com/package/mcblekit)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES5+-yellow.svg)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/Json031/MCBleKit/blob/main/LICENSE)
+<br>
 该微信小程序开源项目代码库用于管理微信小程序中的蓝牙功能。支持初始化蓝牙适配器、扫描和连接蓝牙设备、获取设备服务和特征、监听特征值变化、读写特征值以及断开连接等操作。通过设置不同的监听器，可灵活处理蓝牙连接状态变化、设备发现、服务和特征发现等事件，适用于需要与蓝牙设备进行数据交互的微信小程序开发场景。
 <br>This WeChat mini program open-source project code library is used to manage Bluetooth functionality in WeChat mini programs. Support initialization of Bluetooth adapters, scanning and connecting Bluetooth.
 
 # 安装Install
-* 最新版本 Latest Version: [![NPM version](https://img.shields.io/npm/v/mcblekit.svg)](https://www.npmjs.com/package/mcblekit)
+* 最新版本 Latest Version: 
 ### 编辑package.json，添加mcblekit依赖。 <br>Edit packagejson and add mcblekit dependency:
  ```bash
 {
