@@ -219,7 +219,43 @@ MCBleKit.prototype.getBluetoothAdapterState = function () {
 
 // 开始扫描
 MCBleKit.prototype.startBluetoothDevicesDiscovery = function () {
-    mcTimeout.withTimeout(this.startScan(), ScanDeviceTimeout, '设备扫描超时')
+    const that = this
+    // 安卓系统需要定位权限
+    const deviceInfo = wx.getDeviceInfo()
+    // 仅在安卓系统检查定位权限
+    if (deviceInfo.platform === 'android') {
+        wx.getSetting({
+            success(res) {
+                if (!res.authSetting['scope.userLocation']) {
+                    wx.authorize({
+                    scope: 'scope.userLocation',
+                    success() {
+                        // 定位权限已获取，可以进行蓝牙扫描
+                        mcTimeout.withTimeout(that.startScan(), ScanDeviceTimeout, '设备扫描超时')
+                    },
+                    fail() {
+                        wx.showModal({
+                            title: '提示',
+                            content: '请您打开定位或检查微信是否授权定位，用于连接设备',
+                            confirmColor: '#00b6b5',
+                            showCancel: false,
+                            success(res) {
+                                // 引导用户到设置页面
+                                wx.openSetting();
+                            }
+                        })
+                    }
+                    });
+                } else {
+                    // 定位权限已获取，可以进行蓝牙扫描
+                    mcTimeout.withTimeout(that.startScan(), ScanDeviceTimeout, '设备扫描超时')
+                }
+            }
+        });
+    } else {
+        // iOS系统不需要定位权限
+        mcTimeout.withTimeout(this.startScan(), ScanDeviceTimeout, '设备扫描超时')
+    }
 };
 MCBleKit.prototype.startScan = function () {
     return new Promise((resolve, reject) => {
